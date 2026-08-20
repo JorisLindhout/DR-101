@@ -84,6 +84,15 @@ class DR101App {
    */
   async initAudio() {
     try {
+      // iOS 17+ fix: Set audio session to "playback" BEFORE creating context
+      if (navigator.audioSession) {
+        try {
+          navigator.audioSession.type = 'playback';
+        } catch(e) {
+          console.log('audioSession error:', e);
+        }
+      }
+      
       if (!this.isInitialized) {
         await audioEngine.init();
         
@@ -94,6 +103,10 @@ class DR101App {
         source.buffer = buffer;
         source.connect(ctx.destination);
         source.start(0);
+        
+        // Also try HTML5 Audio unlock for older iOS
+        const silentAudio = new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjU0AAAAAAAAAAAAAAAAJAAAAAAAAAAAAYbZ//OQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjU0AAAAAAAAAAAAAAAAJAAAAAAAAAAAAYbZ//OQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+        silentAudio.play().catch(() => {});
         
         this.isInitialized = true;
         console.log('Audio initialized');
@@ -366,7 +379,7 @@ class DR101App {
       }
     }
 
-    // Initialize audio engine
+    // Initialize audio engine (creates AudioContext in click handler - required for iOS)
     await this.initAudio();
     
     if (!audioEngine.isInitialized) {
@@ -374,20 +387,15 @@ class DR101App {
       return;
     }
 
-    // Play test beep + real sound
+    // Ensure context is running
     const ctx = audioEngine.context;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.frequency.value = 440;
-    gain.gain.value = 0.5;
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.15);
+    if (ctx.state !== 'running') {
+      await ctx.resume();
+    }
 
+    // Trigger the drum sound
     const sound = this.sounds[this.currentSound];
     sound.trigger();
-    this.showToast(`Playing ${this.currentSound}`);
     console.log('Sound triggered:', this.currentSound);
 
     // Trigger visualization

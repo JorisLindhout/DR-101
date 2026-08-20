@@ -201,13 +201,18 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-sm);
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-sm);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg-primary);
+  padding: var(--space-sm) 0;
 }
 
 .waveform-display,
 .envelope-display {
   width: 100%;
-  height: 80px;
+  height: 60px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -454,7 +459,12 @@ body {
   align-items: center;
   justify-content: center;
   gap: var(--space-lg);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-md);
+  position: sticky;
+  top: 76px; /* Below visualizer */
+  z-index: 9;
+  background: var(--bg-primary);
+  padding: var(--space-sm) 0;
 }
 
 .play-button {
