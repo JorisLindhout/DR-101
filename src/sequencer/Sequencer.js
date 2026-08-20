@@ -152,9 +152,8 @@ export class Sequencer {
     });
 
     // Add current class to current step column
-    const stepToShow = this.displayStep ?? this.currentStep;
     if (this.isPlaying) {
-      this.gridElement?.querySelectorAll(`[data-step="${stepToShow}"]`).forEach(step => {
+      this.gridElement?.querySelectorAll(`[data-step="${this.currentStep}"]`).forEach(step => {
         step.classList.add('current');
       });
     }
@@ -211,52 +210,23 @@ export class Sequencer {
   async start() {
     if (this.isPlaying) return;
 
-    // iOS 17+ fix: Set audio session to "playback" BEFORE creating context
-    if (navigator.audioSession) {
-      try {
-        navigator.audioSession.type = 'playback';
-      } catch(e) {
-        console.log('audioSession error:', e);
-      }
-    }
-
     // Initialize audio if needed (required for mobile)
     if (!audioEngine.isInitialized) {
       await audioEngine.init();
     }
-    
-    // Always try to resume - critical for iOS
-    if (audioEngine.context) {
-      await audioEngine.context.resume();
-      
-      // iOS audio unlock: play a silent buffer
-      const ctx = audioEngine.context;
-      const buffer = ctx.createBuffer(1, 1, 22050);
-      const source = ctx.createBufferSource();
-      source.buffer = buffer;
-      source.connect(ctx.destination);
-      source.start(0);
-    }
+    await audioEngine.resume();
     
     if (!audioEngine.isInitialized || !audioEngine.context) {
       console.error('Audio context not available');
       return;
     }
-
-    // Verify context is actually running
-    if (audioEngine.context.state !== 'running') {
-      console.warn('Audio context not running, state:', audioEngine.context.state);
-      await audioEngine.context.resume();
-    }
     
     this.isPlaying = true;
     this.currentStep = 0;
-    this.displayStep = 0;
     this.nextStepTime = audioEngine.currentTime;
 
     // Update UI
     this.updatePlayButton(true);
-    this.updateCurrentStepUI();
 
     // Start scheduler
     this.scheduler();
@@ -302,8 +272,6 @@ export class Sequencer {
    * Main scheduler loop
    */
   scheduler() {
-    if (!this.isPlaying) return;
-
     while (this.nextStepTime < audioEngine.currentTime + this.scheduleAheadTime) {
       this.scheduleStep(this.currentStep, this.nextStepTime);
       this.advanceStep();
@@ -323,22 +291,13 @@ export class Sequencer {
       }
     }
 
-    // Schedule UI update - use requestAnimationFrame for smoother visual sync
-    const msUntilStep = Math.max(0, (time - audioEngine.currentTime) * 1000);
-    if (msUntilStep < 50) {
-      // If very soon, update immediately
-      this.displayStep = stepIndex;
+    // Schedule UI update
+    const msUntilStep = (time - audioEngine.currentTime) * 1000;
+    setTimeout(() => {
+      this.currentStep = stepIndex;
       this.updateCurrentStepUI();
       this.onStepChange(stepIndex);
-    } else {
-      setTimeout(() => {
-        if (this.isPlaying) {
-          this.displayStep = stepIndex;
-          this.updateCurrentStepUI();
-          this.onStepChange(stepIndex);
-        }
-      }, msUntilStep);
-    }
+    }, Math.max(0, msUntilStep));
   }
 
   /**
