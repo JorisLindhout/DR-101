@@ -87,12 +87,17 @@ class DR101App {
       if (!this.isInitialized) {
         await audioEngine.init();
         this.isInitialized = true;
+        this.showToast('Audio enabled!');
         console.log('Audio initialized');
       }
-      await audioEngine.resume();
+      if (audioEngine.context?.state === 'suspended') {
+        await audioEngine.context.resume();
+        console.log('Audio resumed from suspended');
+      }
       return true;
     } catch (e) {
       console.error('Audio init failed:', e);
+      this.showToast('Audio error: ' + e.message);
       return false;
     }
   }
@@ -347,16 +352,24 @@ class DR101App {
    */
   async triggerCurrentSound() {
     // Must init audio in direct response to user gesture (mobile requirement)
-    await this.initAudio();
+    const audioReady = await this.initAudio();
     
-    if (!audioEngine.isInitialized) {
+    if (!audioReady || !audioEngine.isInitialized) {
       console.error('Audio not initialized');
       this.showToast('Tap again to enable audio');
       return;
     }
 
+    // Check audio context state
+    const ctx = audioEngine.context;
+    if (ctx.state !== 'running') {
+      this.showToast(`Audio state: ${ctx.state}`);
+      await ctx.resume();
+    }
+
     const sound = this.sounds[this.currentSound];
     sound.trigger();
+    console.log('Sound triggered:', this.currentSound);
 
     // Trigger visualization
     const attack = sound.params.attack || 0.005;
