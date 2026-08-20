@@ -367,6 +367,18 @@ class DR101App {
       await ctx.resume();
     }
 
+    // Debug: Play a simple test beep first
+    const ctx = audioEngine.context;
+    const testOsc = ctx.createOscillator();
+    const testGain = ctx.createGain();
+    testOsc.frequency.value = 440;
+    testGain.gain.value = 0.3;
+    testOsc.connect(testGain);
+    testGain.connect(ctx.destination); // Direct to output, bypass masterGain
+    testOsc.start();
+    testOsc.stop(ctx.currentTime + 0.1);
+    console.log('Test beep played, context state:', ctx.state);
+
     const sound = this.sounds[this.currentSound];
     sound.trigger();
     console.log('Sound triggered:', this.currentSound);

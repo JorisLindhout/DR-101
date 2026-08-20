@@ -28,9 +28,13 @@ export class Kick {
    */
   trigger(time = null) {
     const ctx = audioEngine.context;
-    if (!ctx) return;
+    if (!ctx) {
+      console.error('Kick: No audio context!');
+      return;
+    }
 
     const now = time ?? ctx.currentTime;
+    console.log('Kick trigger at:', now, 'context state:', ctx.state);
     const { startFreq, endFreq, pitchDecay, attack, decay, volume, drive, click } = this.params;
 
     // Main tone oscillator (sine wave)
