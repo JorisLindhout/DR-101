@@ -373,23 +373,23 @@ class DR101App {
       return;
     }
 
-    // Check audio context state
+    // Check audio context state and show detailed info
     const ctx = audioEngine.context;
+    this.showToast(`State: ${ctx.state} | Rate: ${ctx.sampleRate}`);
     if (ctx.state !== 'running') {
-      this.showToast(`Audio state: ${ctx.state}`);
       await ctx.resume();
     }
 
-    // Debug: Play a simple test beep first
-    const testOsc = ctx.createOscillator();
-    const testGain = ctx.createGain();
-    testOsc.frequency.value = 440;
-    testGain.gain.value = 0.3;
-    testOsc.connect(testGain);
-    testGain.connect(ctx.destination); // Direct to output, bypass masterGain
-    testOsc.start();
-    testOsc.stop(ctx.currentTime + 0.1);
-    console.log('Test beep played, context state:', ctx.state);
+    // Debug: Try HTML5 Audio as fallback test
+    try {
+      const audio = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU'+Array(300).join('77+9'));
+      audio.volume = 1.0;
+      audio.play().then(() => console.log('HTML5 Audio played')).catch(e => console.log('HTML5 Audio failed:', e));
+    } catch(e) {
+      console.log('HTML5 Audio error:', e);
+    }
+    
+    console.log('Audio context state:', ctx.state, 'sample rate:', ctx.sampleRate);
 
     const sound = this.sounds[this.currentSound];
     sound.trigger();
