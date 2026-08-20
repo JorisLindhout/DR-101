@@ -95,22 +95,15 @@ class DR101App {
         source.connect(ctx.destination);
         source.start(0);
         
-        // Also try HTML5 Audio unlock for older iOS
-        const silentAudio = new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjU0AAAAAAAAAAAAAAAAJAAAAAAAAAAAAYbZ//OQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjU0AAAAAAAAAAAAAAAAJAAAAAAAAAAAAYbZ//OQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-        silentAudio.play().catch(() => {});
-        
         this.isInitialized = true;
-        this.showToast('Audio enabled!');
-        console.log('Audio initialized with iOS workaround');
+        console.log('Audio initialized');
       }
       if (audioEngine.context?.state === 'suspended') {
         await audioEngine.context.resume();
-        console.log('Audio resumed from suspended');
       }
       return true;
     } catch (e) {
       console.error('Audio init failed:', e);
-      this.showToast('Audio error: ' + e.message);
       return false;
     }
   }
@@ -373,30 +366,13 @@ class DR101App {
       }
     }
 
-    // Create FRESH AudioContext directly in click handler (iOS requirement)
-    let ctx;
-    try {
-      ctx = new (window.AudioContext || window.webkitAudioContext)();
-      await ctx.resume();
-      this.showToast(`Ctx: ${ctx.state} | audioSession: ${navigator.audioSession?.type || 'N/A'}`);
-    } catch(e) {
-      this.showToast(`Ctx error: ${e.message}`);
+    // Initialize audio engine
+    await this.initAudio();
+    
+    if (!audioEngine.isInitialized) {
+      this.showToast('Tap again to enable audio');
       return;
     }
-
-    // Simple beep directly on this fresh context
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'square';
-    osc.frequency.value = 440;
-    gain.gain.value = 1.0; // MAX volume
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.3);
-
-    // Also init our engine for the real sounds
-    await this.initAudio();
 
     const sound = this.sounds[this.currentSound];
     sound.trigger();
