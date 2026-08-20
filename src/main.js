@@ -364,42 +364,30 @@ class DR101App {
    * Trigger the current sound
    */
   async triggerCurrentSound() {
-    // Must init audio in direct response to user gesture (mobile requirement)
-    const audioReady = await this.initAudio();
-    
-    if (!audioReady || !audioEngine.isInitialized) {
-      console.error('Audio not initialized');
-      this.showToast('Tap again to enable audio');
-      return;
-    }
-
-    // Check audio context state and show detailed info
-    const ctx = audioEngine.context;
-    
-    if (ctx.state === 'interrupted') {
-      this.showToast('Mute switch is ON! Flip it off.');
-      // Try to resume anyway
-      try { await ctx.resume(); } catch(e) {}
-      return;
-    }
-    
-    if (ctx.state !== 'running') {
-      this.showToast(`Audio: ${ctx.state} - resuming...`);
+    // Create FRESH AudioContext directly in click handler (iOS requirement)
+    let ctx;
+    try {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
       await ctx.resume();
+      this.showToast(`Fresh ctx: ${ctx.state}`);
+    } catch(e) {
+      this.showToast(`Ctx error: ${e.message}`);
+      return;
     }
 
-    // LOUD test beep - direct to speakers
-    const testOsc = ctx.createOscillator();
-    const testGain = ctx.createGain();
-    testOsc.type = 'square'; // Harsh, loud
-    testOsc.frequency.value = 880; // High A, easy to hear
-    testGain.gain.value = 0.5; // Loud!
-    testOsc.connect(testGain);
-    testGain.connect(ctx.destination);
-    testOsc.start();
-    testOsc.stop(ctx.currentTime + 0.2);
-    
-    this.showToast(`Playing! Vol: ${testGain.gain.value}`);
+    // Simple beep directly on this fresh context
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.value = 440;
+    gain.gain.value = 1.0; // MAX volume
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.3);
+
+    // Also init our engine for the real sounds
+    await this.initAudio();
 
     const sound = this.sounds[this.currentSound];
     sound.trigger();
