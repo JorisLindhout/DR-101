@@ -388,16 +388,18 @@ class DR101App {
       await ctx.resume();
     }
 
-    // Debug: Try HTML5 Audio as fallback test
-    try {
-      const audio = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU'+Array(300).join('77+9'));
-      audio.volume = 1.0;
-      audio.play().then(() => console.log('HTML5 Audio played')).catch(e => console.log('HTML5 Audio failed:', e));
-    } catch(e) {
-      console.log('HTML5 Audio error:', e);
-    }
+    // LOUD test beep - direct to speakers
+    const testOsc = ctx.createOscillator();
+    const testGain = ctx.createGain();
+    testOsc.type = 'square'; // Harsh, loud
+    testOsc.frequency.value = 880; // High A, easy to hear
+    testGain.gain.value = 0.5; // Loud!
+    testOsc.connect(testGain);
+    testGain.connect(ctx.destination);
+    testOsc.start();
+    testOsc.stop(ctx.currentTime + 0.2);
     
-    console.log('Audio context state:', ctx.state, 'sample rate:', ctx.sampleRate);
+    this.showToast(`Playing! Vol: ${testGain.gain.value}`);
 
     const sound = this.sounds[this.currentSound];
     sound.trigger();
