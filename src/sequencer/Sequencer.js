@@ -152,8 +152,9 @@ export class Sequencer {
     });
 
     // Add current class to current step column
+    const stepToShow = this.displayStep ?? this.currentStep;
     if (this.isPlaying) {
-      this.gridElement?.querySelectorAll(`[data-step="${this.currentStep}"]`).forEach(step => {
+      this.gridElement?.querySelectorAll(`[data-step="${stepToShow}"]`).forEach(step => {
         step.classList.add('current');
       });
     }
@@ -250,6 +251,7 @@ export class Sequencer {
     
     this.isPlaying = true;
     this.currentStep = 0;
+    this.displayStep = 0;
     this.nextStepTime = audioEngine.currentTime;
 
     // Update UI
@@ -302,52 +304,12 @@ export class Sequencer {
   scheduler() {
     if (!this.isPlaying) return;
 
-    const currentTime = audioEngine.currentTime;
-    
-    // Fallback: if audio timing seems stuck (currentTime not advancing),
-    // use a simple interval-based approach
-    if (currentTime === 0 || currentTime === this.lastCurrentTime) {
-      this.fallbackStep();
-    } else {
-      // Normal Web Audio timing
-      while (this.nextStepTime < currentTime + this.scheduleAheadTime) {
-        this.scheduleStep(this.currentStep, this.nextStepTime);
-        this.advanceStep();
-      }
+    while (this.nextStepTime < audioEngine.currentTime + this.scheduleAheadTime) {
+      this.scheduleStep(this.currentStep, this.nextStepTime);
+      this.advanceStep();
     }
-    
-    this.lastCurrentTime = currentTime;
-    this.timerID = setTimeout(() => this.scheduler(), this.lookahead);
-  }
 
-  /**
-   * Fallback step advancement when Web Audio timing isn't working
-   */
-  fallbackStep() {
-    if (!this.fallbackLastTime) {
-      this.fallbackLastTime = performance.now();
-      return;
-    }
-    
-    const now = performance.now();
-    const stepDurationMs = this.getStepDuration() * 1000;
-    
-    if (now - this.fallbackLastTime >= stepDurationMs) {
-      // Trigger sounds for current step
-      for (const [soundType, steps] of Object.entries(this.pattern)) {
-        if (steps[this.currentStep] && this.sounds[soundType]) {
-          this.sounds[soundType].trigger();
-        }
-      }
-      
-      // Update UI
-      this.updateCurrentStepUI();
-      this.onStepChange(this.currentStep);
-      
-      // Advance
-      this.currentStep = (this.currentStep + 1) % this.steps;
-      this.fallbackLastTime = now;
-    }
+    this.timerID = setTimeout(() => this.scheduler(), this.lookahead);
   }
 
   /**
@@ -361,13 +323,22 @@ export class Sequencer {
       }
     }
 
-    // Schedule UI update
-    const msUntilStep = (time - audioEngine.currentTime) * 1000;
-    setTimeout(() => {
-      this.currentStep = stepIndex;
+    // Schedule UI update - use requestAnimationFrame for smoother visual sync
+    const msUntilStep = Math.max(0, (time - audioEngine.currentTime) * 1000);
+    if (msUntilStep < 50) {
+      // If very soon, update immediately
+      this.displayStep = stepIndex;
       this.updateCurrentStepUI();
       this.onStepChange(stepIndex);
-    }, Math.max(0, msUntilStep));
+    } else {
+      setTimeout(() => {
+        if (this.isPlaying) {
+          this.displayStep = stepIndex;
+          this.updateCurrentStepUI();
+          this.onStepChange(stepIndex);
+        }
+      }, msUntilStep);
+    }
   }
 
   /**
