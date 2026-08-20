@@ -375,8 +375,16 @@ class DR101App {
 
     // Check audio context state and show detailed info
     const ctx = audioEngine.context;
-    this.showToast(`State: ${ctx.state} | Rate: ${ctx.sampleRate}`);
+    
+    if (ctx.state === 'interrupted') {
+      this.showToast('Mute switch is ON! Flip it off.');
+      // Try to resume anyway
+      try { await ctx.resume(); } catch(e) {}
+      return;
+    }
+    
     if (ctx.state !== 'running') {
+      this.showToast(`Audio: ${ctx.state} - resuming...`);
       await ctx.resume();
     }
 
