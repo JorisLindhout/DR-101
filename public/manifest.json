@@ -1,0 +1,37 @@
+{
+  "name": "DR-101 Drum Synthesizer",
+  "short_name": "DR-101",
+  "description": "An interactive drum synthesizer for learning audio synthesis fundamentals",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0d0d",
+  "theme_color": "#1a1a1a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["music", "education", "entertainment"],
+  "shortcuts": [
+    {
+      "name": "Play Kick",
+      "url": "/?sound=kick",
+      "description": "Open with kick drum selected"
+    },
+    {
+      "name": "Play Snare",
+      "url": "/?sound=snare",
+      "description": "Open with snare drum selected"
+    }
+  ]
+}
