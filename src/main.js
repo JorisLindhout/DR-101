@@ -374,8 +374,20 @@ class DR101App {
       return;
     }
 
+    // Play test beep + real sound
+    const ctx = audioEngine.context;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.value = 440;
+    gain.gain.value = 0.5;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.15);
+
     const sound = this.sounds[this.currentSound];
     sound.trigger();
+    this.showToast(`Playing ${this.currentSound}`);
     console.log('Sound triggered:', this.currentSound);
 
     // Trigger visualization
