@@ -210,15 +210,42 @@ export class Sequencer {
   async start() {
     if (this.isPlaying) return;
 
+    // iOS 17+ fix: Set audio session to "playback" BEFORE creating context
+    if (navigator.audioSession) {
+      try {
+        navigator.audioSession.type = 'playback';
+      } catch(e) {
+        console.log('audioSession error:', e);
+      }
+    }
+
     // Initialize audio if needed (required for mobile)
     if (!audioEngine.isInitialized) {
       await audioEngine.init();
     }
-    await audioEngine.resume();
+    
+    // Always try to resume - critical for iOS
+    if (audioEngine.context) {
+      await audioEngine.context.resume();
+      
+      // iOS audio unlock: play a silent buffer
+      const ctx = audioEngine.context;
+      const buffer = ctx.createBuffer(1, 1, 22050);
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(ctx.destination);
+      source.start(0);
+    }
     
     if (!audioEngine.isInitialized || !audioEngine.context) {
       console.error('Audio context not available');
       return;
+    }
+
+    // Verify context is actually running
+    if (audioEngine.context.state !== 'running') {
+      console.warn('Audio context not running, state:', audioEngine.context.state);
+      await audioEngine.context.resume();
     }
     
     this.isPlaying = true;
@@ -227,6 +254,7 @@ export class Sequencer {
 
     // Update UI
     this.updatePlayButton(true);
+    this.updateCurrentStepUI();
 
     // Start scheduler
     this.scheduler();
@@ -272,12 +300,54 @@ export class Sequencer {
    * Main scheduler loop
    */
   scheduler() {
-    while (this.nextStepTime < audioEngine.currentTime + this.scheduleAheadTime) {
-      this.scheduleStep(this.currentStep, this.nextStepTime);
-      this.advanceStep();
-    }
+    if (!this.isPlaying) return;
 
+    const currentTime = audioEngine.currentTime;
+    
+    // Fallback: if audio timing seems stuck (currentTime not advancing),
+    // use a simple interval-based approach
+    if (currentTime === 0 || currentTime === this.lastCurrentTime) {
+      this.fallbackStep();
+    } else {
+      // Normal Web Audio timing
+      while (this.nextStepTime < currentTime + this.scheduleAheadTime) {
+        this.scheduleStep(this.currentStep, this.nextStepTime);
+        this.advanceStep();
+      }
+    }
+    
+    this.lastCurrentTime = currentTime;
     this.timerID = setTimeout(() => this.scheduler(), this.lookahead);
+  }
+
+  /**
+   * Fallback step advancement when Web Audio timing isn't working
+   */
+  fallbackStep() {
+    if (!this.fallbackLastTime) {
+      this.fallbackLastTime = performance.now();
+      return;
+    }
+    
+    const now = performance.now();
+    const stepDurationMs = this.getStepDuration() * 1000;
+    
+    if (now - this.fallbackLastTime >= stepDurationMs) {
+      // Trigger sounds for current step
+      for (const [soundType, steps] of Object.entries(this.pattern)) {
+        if (steps[this.currentStep] && this.sounds[soundType]) {
+          this.sounds[soundType].trigger();
+        }
+      }
+      
+      // Update UI
+      this.updateCurrentStepUI();
+      this.onStepChange(this.currentStep);
+      
+      // Advance
+      this.currentStep = (this.currentStep + 1) % this.steps;
+      this.fallbackLastTime = now;
+    }
   }
 
   /**
