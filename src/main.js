@@ -381,7 +381,6 @@ class DR101App {
     }
 
     // Debug: Play a simple test beep first
-    const ctx = audioEngine.context;
     const testOsc = ctx.createOscillator();
     const testGain = ctx.createGain();
     testOsc.frequency.value = 440;
