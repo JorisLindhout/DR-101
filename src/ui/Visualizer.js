@@ -31,24 +31,34 @@ export class Visualizer {
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
       
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
+      // Use minimum dimensions if rect is 0 (not yet rendered)
+      const width = rect.width || 150;
+      const height = rect.height || 80;
+      
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      
+      // Reset transform and scale for retina
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
       
       // Store display dimensions
-      canvas.displayWidth = rect.width;
-      canvas.displayHeight = rect.height;
+      canvas.displayWidth = width;
+      canvas.displayHeight = height;
     };
 
     setupCanvas(this.waveformCanvas, this.waveformCtx);
     setupCanvas(this.envelopeCanvas, this.envelopeCtx);
 
-    // Handle resize
-    window.addEventListener('resize', () => {
-      setupCanvas(this.waveformCanvas, this.waveformCtx);
-      setupCanvas(this.envelopeCanvas, this.envelopeCtx);
-      this.drawStatic();
-    });
+    // Handle resize (only add once)
+    if (!this._resizeHandlerAdded) {
+      this._resizeHandlerAdded = true;
+      window.addEventListener('resize', () => {
+        setupCanvas(this.waveformCanvas, this.waveformCtx);
+        setupCanvas(this.envelopeCanvas, this.envelopeCtx);
+        this.drawStatic();
+      });
+    }
   }
 
   /**
@@ -125,6 +135,10 @@ export class Visualizer {
    */
   start() {
     if (this.isRunning) return;
+    
+    // Re-setup canvases in case dimensions changed
+    this.setupCanvases();
+    
     this.isRunning = true;
     this.animate();
   }

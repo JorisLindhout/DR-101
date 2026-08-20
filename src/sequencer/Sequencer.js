@@ -210,7 +210,16 @@ export class Sequencer {
   async start() {
     if (this.isPlaying) return;
 
+    // Initialize audio if needed (required for mobile)
+    if (!audioEngine.isInitialized) {
+      await audioEngine.init();
+    }
     await audioEngine.resume();
+    
+    if (!audioEngine.isInitialized || !audioEngine.context) {
+      console.error('Audio context not available');
+      return;
+    }
     
     this.isPlaying = true;
     this.currentStep = 0;

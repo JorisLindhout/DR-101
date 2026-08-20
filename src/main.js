@@ -80,21 +80,31 @@ class DR101App {
   }
 
   /**
-   * Set up audio initialization on first user interaction
+   * Initialize audio context (must be called from user gesture on mobile)
    */
-  setupAudioInit() {
-    const initAudio = async () => {
+  async initAudio() {
+    try {
       if (!this.isInitialized) {
         await audioEngine.init();
         this.isInitialized = true;
         console.log('Audio initialized');
       }
       await audioEngine.resume();
-    };
+      return true;
+    } catch (e) {
+      console.error('Audio init failed:', e);
+      return false;
+    }
+  }
 
-    // Initialize on any interaction
-    document.addEventListener('pointerdown', initAudio, { once: true });
-    document.addEventListener('keydown', initAudio, { once: true });
+  /**
+   * Set up audio initialization on first user interaction
+   */
+  setupAudioInit() {
+    // Pre-warm audio on any interaction
+    const warmAudio = () => this.initAudio();
+    document.addEventListener('touchstart', warmAudio, { once: true });
+    document.addEventListener('mousedown', warmAudio, { once: true });
   }
 
   /**
@@ -336,11 +346,14 @@ class DR101App {
    * Trigger the current sound
    */
   async triggerCurrentSound() {
-    if (!this.isInitialized) {
-      await audioEngine.init();
-      this.isInitialized = true;
+    // Must init audio in direct response to user gesture (mobile requirement)
+    await this.initAudio();
+    
+    if (!audioEngine.isInitialized) {
+      console.error('Audio not initialized');
+      this.showToast('Tap again to enable audio');
+      return;
     }
-    await audioEngine.resume();
 
     const sound = this.sounds[this.currentSound];
     sound.trigger();
@@ -350,11 +363,15 @@ class DR101App {
     const decay = sound.params.decay || sound.params.noiseDecay || 0.3;
     this.visualizer?.triggerForSound(attack, decay);
 
-    // Visual feedback on play button
-    this.playButton?.classList.add('active');
-    setTimeout(() => {
-      this.playButton?.classList.remove('active');
-    }, 100);
+    // Visual feedback on play button - pulse animation
+    if (this.playButton) {
+      this.playButton.style.transform = 'scale(0.9)';
+      this.playButton.style.boxShadow = '0 0 30px rgba(74, 124, 89, 0.8)';
+      setTimeout(() => {
+        this.playButton.style.transform = '';
+        this.playButton.style.boxShadow = '';
+      }, 150);
+    }
   }
 
   /**
