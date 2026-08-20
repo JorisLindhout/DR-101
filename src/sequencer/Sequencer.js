@@ -152,8 +152,9 @@ export class Sequencer {
     });
 
     // Add current class to current step column
-    if (this.isPlaying) {
-      this.gridElement?.querySelectorAll(`[data-step="${this.currentStep}"]`).forEach(step => {
+    const stepToShow = this.displayStep ?? this.currentStep;
+    if (this.isPlaying && stepToShow !== null) {
+      this.gridElement?.querySelectorAll(`[data-step="${stepToShow}"]`).forEach(step => {
         step.classList.add('current');
       });
     }
@@ -210,11 +211,24 @@ export class Sequencer {
   async start() {
     if (this.isPlaying) return;
 
+    // iOS 17+ fix: Set audio session to "playback" to bypass mute switch
+    if (navigator.audioSession) {
+      try {
+        navigator.audioSession.type = 'playback';
+      } catch(e) {
+        console.log('audioSession error:', e);
+      }
+    }
+
     // Initialize audio if needed (required for mobile)
     if (!audioEngine.isInitialized) {
       await audioEngine.init();
     }
-    await audioEngine.resume();
+    
+    // Always resume - critical for iOS
+    if (audioEngine.context) {
+      await audioEngine.context.resume();
+    }
     
     if (!audioEngine.isInitialized || !audioEngine.context) {
       console.error('Audio context not available');
@@ -223,13 +237,18 @@ export class Sequencer {
     
     this.isPlaying = true;
     this.currentStep = 0;
+    this.displayStep = 0;
     this.nextStepTime = audioEngine.currentTime;
 
     // Update UI
     this.updatePlayButton(true);
+    this.updateCurrentStepUI();
 
     // Start scheduler
     this.scheduler();
+    
+    // Start UI update loop (separate from audio scheduler for reliability)
+    this.startUILoop();
   }
 
   /**
@@ -242,10 +261,45 @@ export class Sequencer {
       clearTimeout(this.timerID);
       this.timerID = null;
     }
+    
+    if (this.uiLoopID) {
+      cancelAnimationFrame(this.uiLoopID);
+      this.uiLoopID = null;
+    }
 
     // Update UI
     this.updatePlayButton(false);
+    this.displayStep = null;
     this.updateCurrentStepUI();
+  }
+  
+  /**
+   * Start UI update loop using requestAnimationFrame
+   */
+  startUILoop() {
+    const stepDuration = this.getStepDuration() * 1000;
+    let lastUIUpdate = performance.now();
+    
+    const updateUI = () => {
+      if (!this.isPlaying) return;
+      
+      const now = performance.now();
+      if (now - lastUIUpdate >= stepDuration * 0.9) {
+        // Sync displayStep with audio scheduler's current position
+        const elapsed = audioEngine.currentTime - this.startTime;
+        if (elapsed >= 0) {
+          const stepsSinceStart = Math.floor(elapsed / this.getStepDuration());
+          this.displayStep = stepsSinceStart % this.steps;
+          this.updateCurrentStepUI();
+        }
+        lastUIUpdate = now;
+      }
+      
+      this.uiLoopID = requestAnimationFrame(updateUI);
+    };
+    
+    this.startTime = audioEngine.currentTime;
+    this.uiLoopID = requestAnimationFrame(updateUI);
   }
 
   /**
@@ -290,14 +344,7 @@ export class Sequencer {
         this.sounds[soundType].trigger(time);
       }
     }
-
-    // Schedule UI update
-    const msUntilStep = (time - audioEngine.currentTime) * 1000;
-    setTimeout(() => {
-      this.currentStep = stepIndex;
-      this.updateCurrentStepUI();
-      this.onStepChange(stepIndex);
-    }, Math.max(0, msUntilStep));
+    // UI updates handled by separate UI loop for reliability on mobile
   }
 
   /**
