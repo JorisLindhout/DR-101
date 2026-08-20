@@ -28,8 +28,10 @@ export class AudioEngine {
       this.analyser.fftSize = 2048;
       this.analyser.smoothingTimeConstant = 0.8;
       
-      // Connect master gain to analyser, then to destination
+      // Connect master gain to both analyser AND directly to destination
+      // (iOS sometimes has issues with analyser -> destination chain)
       this.masterGain.connect(this.analyser);
+      this.masterGain.connect(this.context.destination);
       this.analyser.connect(this.context.destination);
       
       this.isInitialized = true;
