@@ -364,12 +364,21 @@ class DR101App {
    * Trigger the current sound
    */
   async triggerCurrentSound() {
+    // iOS 17+ fix: Set audio session to "playback" to ignore mute switch
+    if (navigator.audioSession) {
+      try {
+        navigator.audioSession.type = 'playback';
+      } catch(e) {
+        console.log('audioSession error:', e);
+      }
+    }
+
     // Create FRESH AudioContext directly in click handler (iOS requirement)
     let ctx;
     try {
       ctx = new (window.AudioContext || window.webkitAudioContext)();
       await ctx.resume();
-      this.showToast(`Fresh ctx: ${ctx.state}`);
+      this.showToast(`Ctx: ${ctx.state} | audioSession: ${navigator.audioSession?.type || 'N/A'}`);
     } catch(e) {
       this.showToast(`Ctx error: ${e.message}`);
       return;

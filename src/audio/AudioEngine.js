@@ -17,6 +17,11 @@ export class AudioEngine {
     if (this.isInitialized) return;
 
     try {
+      // iOS 17+ fix: Set audio session to "playback" to bypass mute switch
+      if (navigator.audioSession) {
+        navigator.audioSession.type = 'playback';
+      }
+
       this.context = new (window.AudioContext || window.webkitAudioContext)();
       
       // Create master gain node
