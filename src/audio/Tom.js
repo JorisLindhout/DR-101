@@ -147,8 +147,8 @@ export class Tom {
         groupLabel: 'Pitch Envelope',
         groupInfo: 'pitchEnvelope',
         params: [
-          { key: 'startFreq', label: 'Start', min: 100, max: 500, unit: 'Hz', info: 'frequency' },
-          { key: 'endFreq', label: 'End', min: 40, max: 300, unit: 'Hz', info: 'frequency' },
+          { key: 'startFreq', label: 'Start', min: 100, max: 500, unit: 'Hz', info: 'pitchStart' },
+          { key: 'endFreq', label: 'End', min: 40, max: 300, unit: 'Hz', info: 'pitchEnd' },
           { key: 'pitchDecay', label: 'Decay', min: 0.02, max: 0.2, unit: 's', info: 'pitchDecay' },
         ]
       },

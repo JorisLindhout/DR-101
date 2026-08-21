@@ -157,7 +157,7 @@ export class HiHat {
           },
           { 
             key: 'filterQ', 
-            label: 'Reso', 
+            label: 'Resonance', 
             min: 0.5, 
             max: 5, 
             unit: '', 
@@ -211,7 +211,7 @@ export class HiHat {
           },
           { 
             key: 'brightness', 
-            label: 'Bright', 
+            label: 'Brightness', 
             min: 0, 
             max: 1, 
             unit: '', 

@@ -176,7 +176,7 @@ export class Snare {
         groupLabel: 'Tone (Body)',
         groupInfo: 'oscillator',
         params: [
-          { key: 'toneFreq', label: 'Freq', min: 100, max: 400, unit: 'Hz', info: 'frequency' },
+          { key: 'toneFreq', label: 'Frequency', min: 100, max: 400, unit: 'Hz', info: 'frequency' },
           { key: 'toneMix', label: 'Mix', min: 0, max: 1, unit: '', info: 'mix' },
           { key: 'toneDecay', label: 'Decay', min: 0.02, max: 0.3, unit: 's', info: 'decay' },
         ]
@@ -196,7 +196,7 @@ export class Snare {
         groupInfo: 'bandpassFilter',
         params: [
           { key: 'filterFreq', label: 'Cutoff', min: 500, max: 8000, unit: 'Hz', info: 'cutoff' },
-          { key: 'filterQ', label: 'Reso', min: 0.5, max: 5, unit: '', info: 'resonance' },
+          { key: 'filterQ', label: 'Resonance', min: 0.5, max: 5, unit: '', info: 'resonance' },
         ]
       },
       {
