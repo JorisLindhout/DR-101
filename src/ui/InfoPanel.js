@@ -24,19 +24,19 @@ export class InfoPanel {
    */
   bindEvents() {
     // Close button
-    this.closeBtn?.addEventListener('click', () => this.close());
+    this.closeBtn?.addEventListener('click', () => this.toggleLearningMode());
 
     // Click outside to close
-    this.panel?.addEventListener('click', (e) => {
+    /*this.panel?.addEventListener('click', (e) => {
       if (e.target === this.panel) {
         this.close();
       }
-    });
+    });*/
 
     // Escape key to close
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && this.isOpen) {
-        this.close();
+        this.toggleLearningMode();
       }
     });
 
