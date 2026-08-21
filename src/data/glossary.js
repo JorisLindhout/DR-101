@@ -4,238 +4,356 @@
  */
 
 export const glossary = {
+
   // === OSCILLATORS & WAVEFORMS ===
+
   oscillator: {
     title: 'Oscillator',
     content: `
-      <p>An <strong>oscillator</strong> is the heart of any synthesizer. It generates a repeating waveform that we hear as a tone.</p>
-      <p>Think of it like a vibrating guitar string — it moves back and forth at a specific rate (frequency), creating sound waves.</p>
-      <p>Different <strong>waveforms</strong> have different characters:</p>
-      <ul>
-        <li><strong>Sine</strong> — Pure, smooth, fundamental tone (like a tuning fork)</li>
-        <li><strong>Triangle</strong> — Slightly brighter than sine, still mellow</li>
-        <li><strong>Square</strong> — Hollow, buzzy (like old video games)</li>
-        <li><strong>Sawtooth</strong> — Bright, rich in harmonics (classic synth lead sound)</li>
-      </ul>
+      <p><strong>Concept:</strong> An <strong>oscillator</strong> generates a repeating waveform that we hear as a pitched tone.</p>
+
+      <p><strong>What it does:</strong> The oscillator creates the basic tonal building block of a synthesized sound. Its frequency determines the pitch, while its waveform affects the character of the tone.</p>
+
+      <p><strong>What you hear:</strong> Different oscillators and waveforms can produce smooth, mellow, buzzy, or bright sounds.</p>
+
+      <p><strong>Try it:</strong> Change the frequency of a tonal drum and listen to the pitch move up and down.</p>
     `
   },
 
   waveform: {
     title: 'Waveform',
     content: `
-      <p>A <strong>waveform</strong> is the shape of a sound wave over time. The shape determines the tone's character.</p>
-      <p>Imagine drawing a line that shows how air pressure changes: that line's shape is the waveform.</p>
-      <p>In drum synthesis, we often use <strong>sine waves</strong> for the deep "thump" of kicks and toms because they're smooth and pure.</p>
+      <p><strong>Concept:</strong> A <strong>waveform</strong> is the shape of an audio signal as it changes over time. Its shape affects the tone's character.</p>
+
+      <p><strong>What it does:</strong> Different waveform shapes contain different combinations of frequencies, called <strong>harmonics</strong>.</p>
+
+      <p><strong>What you hear:</strong> A sine wave sounds smooth and pure, while waveforms with more harmonics sound brighter or more complex.</p>
+
+      <p><strong>Try it:</strong> Compare different waveforms at the same pitch and listen to how the character changes while the note stays at the same frequency.</p>
     `
   },
 
   noise: {
     title: 'White Noise',
     content: `
-      <p><strong>White noise</strong> contains all frequencies at equal intensity — like static on a TV or the sound of rain.</p>
-      <p>It's essential for drum synthesis because it creates the "sizzle" of hi-hats and the "crack" of snare wires.</p>
-      <p>By filtering noise (removing some frequencies), we can shape it into hi-hats, cymbals, and snare textures.</p>
+      <p><strong>Concept:</strong> <strong>White noise</strong> contains a broad range of frequencies without a single clear pitch. It sounds similar to static or rushing air.</p>
+
+      <p><strong>What it does:</strong> Noise provides the unpitched part of sounds such as snare wires and hi-hats.</p>
+
+      <p><strong>What you hear:</strong> Noise creates the "sizzle," "hiss," and texture of these drums.</p>
+
+      <p><strong>Try it:</strong> Listen to the noise component of a snare or hi-hat, then change its filter settings to hear how removing frequencies changes its character.</p>
     `
   },
 
+
   // === AMPLITUDE ENVELOPE ===
+
   amplitudeEnvelope: {
-    title: 'Amplitude Envelope (ADSR)',
+    title: 'Amplitude Envelope',
     content: `
-      <p>The <strong>amplitude envelope</strong> shapes how loud a sound is over time — its "volume shape."</p>
-      <p>Most synths use <strong>ADSR</strong>:</p>
+      <p><strong>Concept:</strong> An <strong>amplitude envelope</strong> controls how the level of a sound changes over time.</p>
+
+      <p><strong>What it does:</strong> DR-101 uses <strong>Attack</strong> and <strong>Decay</strong> to shape the volume of a drum hit.</p>
+
       <ul>
-        <li><strong>Attack</strong> — How fast the sound reaches full volume</li>
-        <li><strong>Decay</strong> — How fast it drops to the sustain level</li>
-        <li><strong>Sustain</strong> — The volume while a note is held</li>
-        <li><strong>Release</strong> — How fast it fades after the note ends</li>
+        <li><strong>Attack</strong> — How quickly the sound reaches its initial level</li>
+        <li><strong>Decay</strong> — How quickly the sound fades away</li>
       </ul>
-      <p>For drums, we mainly use <strong>Attack</strong> and <strong>Decay</strong> since drum hits don't sustain.</p>
+
+      <p><strong>What you hear:</strong> A short attack makes a drum hit immediately. A shorter decay makes it tighter, while a longer decay lets it ring out.</p>
+
+      <p><strong>Try it:</strong> Set Decay very short and then very long. Listen to how the same drum changes from tight and punchy to longer and more sustained.</p>
     `
   },
 
   attack: {
     title: 'Attack',
     content: `
-      <p><strong>Attack</strong> controls how quickly a sound reaches its maximum volume.</p>
-      <p><strong>Fast attack</strong> (short time) = punchy, immediate hit — perfect for drums!</p>
-      <p><strong>Slow attack</strong> (long time) = gradual fade-in — like strings swelling.</p>
-      <p>Most drums use very short attacks (1-5 milliseconds) to sound percussive.</p>
+      <p><strong>Concept:</strong> <strong>Attack</strong> controls how quickly a sound reaches its initial volume.</p>
+
+      <p><strong>What it does:</strong> It sets the amount of time between the start of the drum hit and its initial level.</p>
+
+      <p><strong>What you hear:</strong> A short attack creates an immediate, punchy hit. A longer attack creates a softer fade-in.</p>
+
+      <p><strong>Try it:</strong> Increase Attack while repeatedly triggering the drum. Listen for the initial punch becoming less immediate.</p>
     `
   },
 
   decay: {
     title: 'Decay',
     content: `
-      <p><strong>Decay</strong> controls how quickly a sound fades after the initial attack.</p>
-      <p><strong>Short decay</strong> = tight, punchy sound (closed hi-hat, tight kick)</p>
-      <p><strong>Long decay</strong> = sustained, ringing sound (open hi-hat, boomy kick)</p>
-      <p>This is one of the most important parameters for shaping drum character!</p>
+      <p><strong>Concept:</strong> <strong>Decay</strong> controls how quickly a sound or sound component fades after it begins.</p>
+
+      <p><strong>What it does:</strong> In DR-101, decay can control different parts of a drum sound, including its amplitude, tone, noise, or pitch.</p>
+
+      <p><strong>What you hear:</strong> Short decay creates a tighter, shorter sound. Long decay creates a longer, more sustained or ringing sound.</p>
+
+      <p><strong>Try it:</strong> Compare the shortest and longest decay settings and listen to how much longer the drum or sound component continues.</p>
     `
   },
 
   amplitude: {
-    title: 'Amplitude (Volume)',
+    title: 'Amplitude',
     content: `
-      <p><strong>Amplitude</strong> is just a technical word for loudness or volume.</p>
-      <p>Higher amplitude = louder sound. Lower amplitude = quieter sound.</p>
-      <p>In synthesis, we often measure it from 0 (silent) to 1 (maximum).</p>
+      <p><strong>Concept:</strong> <strong>Amplitude</strong> describes the strength of an audio signal.</p>
+
+      <p><strong>What it does:</strong> A higher amplitude produces a stronger signal, while a lower amplitude produces a weaker signal. Volume controls the overall level, while an amplitude envelope controls how that level changes over time.</p>
+
+      <p><strong>What you hear:</strong> Greater amplitude is generally heard as louder; lower amplitude is heard as quieter.</p>
+
+      <p><strong>Try it:</strong> Change Volume and listen to the overall level. Then change Attack or Decay and listen to how the level changes over time.</p>
     `
   },
 
+
   // === PITCH ENVELOPE ===
+
   pitchEnvelope: {
     title: 'Pitch Envelope',
     content: `
-      <p>A <strong>pitch envelope</strong> changes the frequency (pitch) of a sound over time.</p>
-      <p>This is the secret sauce for realistic kick and tom drums! They start at a higher pitch and quickly drop to a lower pitch.</p>
-      <p>That downward pitch "sweep" in the first few milliseconds is what gives kicks their characteristic "thump."</p>
+      <p><strong>Concept:</strong> A <strong>pitch envelope</strong> changes the pitch of a sound over time.</p>
+
+      <p><strong>What it does:</strong> Start sets the frequency at the beginning of the drum hit. End sets the frequency the sound moves toward. Pitch Decay controls how quickly it moves between them.</p>
+
+      <p><strong>What you hear:</strong> Kicks and toms can start at a higher pitch and quickly drop toward a lower pitch. This downward <strong>pitch sweep</strong> creates much of their characteristic punch and movement.</p>
+
+      <p><strong>Try it:</strong> Set Start high and End low, then shorten Pitch Decay. Listen for the quick downward pitch sweep at the beginning of the drum.</p>
+    `
+  },
+
+  pitchStart: {
+    title: 'Start Frequency',
+    content: `
+      <p><strong>Concept:</strong> The <strong>start frequency</strong> is the frequency of the oscillator when the drum hit begins.</p>
+
+      <p><strong>What it does:</strong> It sets the starting point of the pitch envelope.</p>
+
+      <p><strong>What you hear:</strong> Higher values produce a higher starting pitch. Lower values produce a lower starting pitch.</p>
+
+      <p><strong>Try it:</strong> Leave End and Pitch Decay unchanged, then move Start up and down. Listen to the pitch at the very beginning of the drum hit.</p>
+    `
+  },
+
+  pitchEnd: {
+    title: 'End Frequency',
+    content: `
+      <p><strong>Concept:</strong> The <strong>end frequency</strong> is the frequency the oscillator moves toward during the pitch envelope.</p>
+
+      <p><strong>What it does:</strong> It sets the destination of the pitch sweep.</p>
+
+      <p><strong>What you hear:</strong> A lower End value creates a larger downward pitch sweep. Bringing End closer to Start produces a subtler pitch change.</p>
+
+      <p><strong>Try it:</strong> Leave Start and Pitch Decay unchanged, then gradually lower End. Listen to the pitch sweep become more pronounced.</p>
     `
   },
 
   pitchDecay: {
     title: 'Pitch Decay',
     content: `
-      <p><strong>Pitch decay</strong> controls how quickly the pitch drops from the start frequency to the end frequency.</p>
-      <p><strong>Fast pitch decay</strong> = snappy, tight (modern electronic kicks)</p>
-      <p><strong>Slow pitch decay</strong> = more "swoopy," vintage feel (TR-808 style)</p>
+      <p><strong>Concept:</strong> <strong>Pitch Decay</strong> controls how quickly the pitch moves from the start frequency to the end frequency.</p>
+
+      <p><strong>What it does:</strong> It sets the amount of time taken by the pitch sweep.</p>
+
+      <p><strong>What you hear:</strong> Short Pitch Decay creates a fast, punchy pitch drop. Longer Pitch Decay makes the pitch sweep slower and more noticeable.</p>
+
+      <p><strong>Try it:</strong> Keep Start and End unchanged while changing only Pitch Decay. Listen to how the timing of the pitch movement changes.</p>
     `
   },
 
   frequency: {
     title: 'Frequency (Hz)',
     content: `
-      <p><strong>Frequency</strong> is how many times per second a waveform repeats, measured in <strong>Hertz (Hz)</strong>.</p>
-      <p>Higher frequency = higher pitch. Lower frequency = lower pitch.</p>
-      <p>Human hearing ranges from about 20 Hz (very low bass) to 20,000 Hz (very high treble).</p>
-      <p>A kick drum's fundamental is typically 40-80 Hz. Hi-hats are mostly 8,000+ Hz.</p>
+      <p><strong>Concept:</strong> <strong>Frequency</strong> describes how many times a waveform repeats each second. It is measured in <strong>Hertz (Hz)</strong>.</p>
+
+      <p><strong>What it does:</strong> The frequency of an oscillator determines how quickly it vibrates.</p>
+
+      <p><strong>What you hear:</strong> Higher frequencies are generally heard as higher pitches, while lower frequencies are heard as lower pitches.</p>
+
+      <p><strong>Try it:</strong> Change a tonal drum's frequency while repeatedly triggering it. Listen to the pitch move higher and lower.</p>
     `
   },
 
+
   // === FILTERS ===
+
   lowpassFilter: {
     title: 'Low-Pass Filter (LPF)',
     content: `
-      <p>A <strong>low-pass filter</strong> lets low frequencies through and cuts high frequencies.</p>
-      <p>Think of it as a "darkness" control — lower cutoff = darker, more muffled sound.</p>
-      <p>It's called "low-pass" because low frequencies pass through while highs are blocked.</p>
+      <p><strong>Concept:</strong> A <strong>low-pass filter</strong> allows lower frequencies through while reducing higher frequencies.</p>
+
+      <p><strong>What it does:</strong> The filter removes progressively more high-frequency content as the cutoff is lowered.</p>
+
+      <p><strong>What you hear:</strong> Lower cutoff settings make a sound darker and more muffled. Higher settings allow more high-frequency content through, making the sound brighter.</p>
+
+      <p><strong>Try it:</strong> Sweep the cutoff from low to high and listen to high-frequency content gradually return.</p>
     `
   },
 
   highpassFilter: {
     title: 'High-Pass Filter (HPF)',
     content: `
-      <p>A <strong>high-pass filter</strong> lets high frequencies through and cuts low frequencies.</p>
-      <p>This is essential for hi-hats and cymbals — we filter out the bass to leave only the bright, shimmery highs.</p>
-      <p>Higher cutoff = thinner, brighter sound with less low-end.</p>
+      <p><strong>Concept:</strong> A <strong>high-pass filter</strong> allows higher frequencies through while reducing lower frequencies.</p>
+
+      <p><strong>What it does:</strong> The filter removes progressively more low-frequency content as the cutoff is raised.</p>
+
+      <p><strong>What you hear:</strong> Higher cutoff settings make the sound thinner and brighter because more low-frequency content has been removed.</p>
+
+      <p><strong>Try it:</strong> Start with a low cutoff and gradually raise it. Listen to the low-frequency body disappear from the sound.</p>
     `
   },
 
   bandpassFilter: {
     title: 'Band-Pass Filter (BPF)',
     content: `
-      <p>A <strong>band-pass filter</strong> lets through only a specific range of frequencies, cutting both below and above.</p>
-      <p>It's like combining a low-pass and high-pass filter. Great for shaping the "body" of snares.</p>
-      <p>The <strong>center frequency</strong> determines where the band is focused.</p>
+      <p><strong>Concept:</strong> A <strong>band-pass filter</strong> allows a range of frequencies through while reducing frequencies above and below that range.</p>
+
+      <p><strong>What it does:</strong> The center frequency determines where the filter is focused, while resonance controls how strongly that area is emphasized.</p>
+
+      <p><strong>What you hear:</strong> Moving the filter changes which part of the sound stands out, allowing you to focus the snare on different frequency regions.</p>
+
+      <p><strong>Try it:</strong> Sweep the center frequency while listening to the snare. Then increase Resonance and repeat the sweep.</p>
     `
   },
 
   cutoff: {
     title: 'Cutoff Frequency',
     content: `
-      <p><strong>Cutoff frequency</strong> is where a filter starts to reduce frequencies.</p>
-      <p>For a low-pass filter: frequencies above the cutoff get quieter.</p>
-      <p>For a high-pass filter: frequencies below the cutoff get quieter.</p>
-      <p>Moving the cutoff dramatically changes the sound's brightness or darkness.</p>
+      <p><strong>Concept:</strong> The <strong>cutoff frequency</strong> determines where a filter begins reducing frequencies.</p>
+
+      <p><strong>What it does:</strong> With a low-pass filter, frequencies above the cutoff are reduced. With a high-pass filter, frequencies below the cutoff are reduced.</p>
+
+      <p><strong>What you hear:</strong> Changing the cutoff can make a sound darker, brighter, thinner, or more focused depending on the type of filter.</p>
+
+      <p><strong>Try it:</strong> Move the cutoff slowly while repeatedly triggering the drum. Listen to different parts of the frequency spectrum become more or less prominent.</p>
     `
   },
 
   resonance: {
-    title: 'Resonance (Q)',
+    title: 'Resonance',
     content: `
-      <p><strong>Resonance</strong> (also called Q) boosts frequencies right at the cutoff point.</p>
-      <p>Low resonance = smooth, gentle filtering.</p>
-      <p>High resonance = emphasized peak, more "vocal" or "wah-like" character.</p>
-      <p>Very high resonance can make filters "ring" or even self-oscillate!</p>
+      <p><strong>Concept:</strong> <strong>Resonance</strong> emphasizes frequencies around a filter's cutoff point.</p>
+
+      <p><strong>What it does:</strong> It controls how strongly the filter emphasizes that frequency region.</p>
+
+      <p><strong>What you hear:</strong> Low resonance produces a smoother sound. Higher resonance creates a sharper, more focused or ringing character.</p>
+
+      <p><strong>Try it:</strong> Turn Resonance up and sweep the cutoff. Listen for the emphasized frequency moving through the sound.</p>
     `
   },
 
+
   // === GENERAL CONCEPTS ===
+
   general: {
     title: 'Synthesis Basics',
     content: `
-      <p><strong>Audio synthesis</strong> is creating sounds from scratch using electronic signals.</p>
-      <p>The basic recipe for any synthesized drum:</p>
+      <p><strong>Concept:</strong> <strong>Audio synthesis</strong> is the process of creating sounds from electronic signals.</p>
+
+      <p><strong>What it does:</strong> Synthesized drums are built by combining a few basic building blocks:</p>
+
       <ol>
-        <li><strong>Source</strong> — Oscillator (tone) or noise</li>
-        <li><strong>Shape</strong> — Filter to sculpt the frequencies</li>
-        <li><strong>Envelope</strong> — Control how it changes over time</li>
+        <li><strong>Source</strong> — An oscillator creates a pitched tone; noise creates an unpitched sound.</li>
+        <li><strong>Shape</strong> — Filters change which frequencies are present.</li>
+        <li><strong>Envelope</strong> — Controls how a sound or one of its properties changes over time.</li>
       </ol>
-      <p>By tweaking these elements, you can create any drum sound imaginable!</p>
+
+      <p><strong>What you hear:</strong> Changing these elements changes different qualities of the drum, such as its pitch, length, brightness, punch, and character.</p>
+
+      <p><strong>Try it:</strong> Change one control at a time and listen carefully to what changes. Try describing what you hear using the synthesis terms in the interface.</p>
     `
   },
 
   distortion: {
     title: 'Distortion / Drive',
     content: `
-      <p><strong>Distortion</strong> adds harmonic overtones by "clipping" the waveform.</p>
-      <p>A little distortion adds warmth and presence. A lot creates aggressive, crunchy sounds.</p>
-      <p>It's great for making kicks punchier or giving snares more bite.</p>
+      <p><strong>Concept:</strong> <strong>Distortion</strong> changes the shape of an audio signal and creates additional <strong>harmonics</strong>.</p>
+
+      <p><strong>What it does:</strong> Drive controls how strongly the signal is pushed into distortion.</p>
+
+      <p><strong>What you hear:</strong> A small amount can add warmth, presence, and punch. More distortion creates a rougher, harsher, or more aggressive sound.</p>
+
+      <p><strong>Try it:</strong> Start with Drive at zero and gradually increase it. Listen for new harmonic content appearing as the signal becomes more distorted.</p>
     `
   },
 
   mix: {
     title: 'Mix / Blend',
     content: `
-      <p><strong>Mix</strong> controls the balance between two sound sources.</p>
-      <p>For snares: mix between the tonal "body" and the noisy "wires."</p>
-      <p>Finding the right mix is key to getting the character you want.</p>
+      <p><strong>Concept:</strong> <strong>Mix</strong> controls the balance between two sound sources or components.</p>
+
+      <p><strong>What it does:</strong> In the snare, Mix blends the tonal <strong>body</strong> with the noisy <strong>snare wires</strong>.</p>
+
+      <p><strong>What you hear:</strong> More tone produces a fuller, more pitched sound. More noise produces a sharper, noisier snare.</p>
+
+      <p><strong>Try it:</strong> Move Mix slowly from one extreme to the other. Listen to the sound move between mostly tonal and mostly noisy.</p>
     `
   },
 
   transient: {
     title: 'Transient / Click',
     content: `
-      <p>A <strong>transient</strong> is the very first moment of a sound — the initial "click" or "snap."</p>
-      <p>Strong transients make drums sound punchy and defined.</p>
-      <p>This parameter adds a short burst of higher frequencies at the start for more attack.</p>
+      <p><strong>Concept:</strong> A <strong>transient</strong> is a short, rapid burst of sound, usually at the beginning of a drum hit.</p>
+
+      <p><strong>What it does:</strong> A Click or Snap control adds a short burst of higher-frequency content to the beginning of the sound.</p>
+
+      <p><strong>What you hear:</strong> A stronger transient makes a drum sound sharper, punchier, and more defined.</p>
+
+      <p><strong>Try it:</strong> Turn the transient control down, then slowly increase it while listening specifically to the first instant of the drum hit.</p>
     `
   },
 
   metallic: {
     title: 'Metallic Character',
     content: `
-      <p><strong>Metallic</strong> adds high-frequency tonal content that simulates the ring of metal.</p>
-      <p>Real cymbals have complex overtones from vibrating metal. This parameter emulates that character.</p>
-      <p>Higher values = more bell-like, cymbal quality. Lower = more pure noise.</p>
+      <p><strong>Concept:</strong> Metallic character comes from additional tonal components that resemble the complex overtones of vibrating metal.</p>
+
+      <p><strong>What it does:</strong> The Metallic control adds more metallic tonal content to the noise-based hi-hat.</p>
+
+      <p><strong>What you hear:</strong> Higher values make the hi-hat more metallic, bell-like, or cymbal-like. Lower values leave more of the noise character.</p>
+
+      <p><strong>Try it:</strong> Increase Metallic slowly and listen for tonal, ringing qualities appearing inside the noise.</p>
     `
   },
 
   brightness: {
     title: 'Brightness',
     content: `
-      <p><strong>Brightness</strong> controls the overall high-frequency content.</p>
-      <p>Brighter = more sizzle, presence, and air.</p>
-      <p>Darker = warmer, more subdued, sits back in the mix.</p>
+      <p><strong>Concept:</strong> <strong>Brightness</strong> describes how much high-frequency content a sound contains.</p>
+
+      <p><strong>What it does:</strong> The Brightness control changes the amount of high-frequency content in the sound.</p>
+
+      <p><strong>What you hear:</strong> More brightness produces more sizzle, presence, and air. Less brightness produces a darker, softer sound.</p>
+
+      <p><strong>Try it:</strong> Move Brightness from low to high and listen specifically to the high-frequency "air" of the sound.</p>
     `
   },
 
   body: {
-    title: 'Body (Sub-Oscillator)',
+    title: 'Body',
     content: `
-      <p><strong>Body</strong> adds a lower octave (sub-oscillator) beneath the main tone.</p>
-      <p>This fills out the low end, making toms and kicks feel bigger and fuller.</p>
-      <p>Too much can make things muddy; find the sweet spot!</p>
+      <p><strong>Concept:</strong> <strong>Body</strong> describes the low-frequency weight and fullness of a sound.</p>
+
+      <p><strong>What it does:</strong> The Body control adds a lower-frequency component beneath the main tonal component of the tom.</p>
+
+      <p><strong>What you hear:</strong> More Body makes the drum feel bigger, deeper, and fuller. Too much can make the sound feel muddy.</p>
+
+      <p><strong>Try it:</strong> Start with Body at zero and gradually increase it. Listen for the low-frequency weight appearing underneath the main tone.</p>
     `
   }
+
 };
+
 
 /**
  * Get glossary entry by key
  */
+
 export function getGlossaryEntry(key) {
+
   return glossary[key] || {
     title: 'Parameter Info',
     content: '<p>Information not available for this parameter.</p>'
   };
+
 }
