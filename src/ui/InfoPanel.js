@@ -37,11 +37,12 @@ export class InfoPanel {
     });*/
 
     // Escape key to close
-    /*document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && this.isOpen) {
-        this.toggleLearningMode();
+        this.close();
+        document.querySelector('.knob-info.active').classList.remove('active');
       }
-    });*/
+    });
 
     // Global info toggle
     /*this.globalToggle?.addEventListener('click', () => {

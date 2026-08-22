@@ -2,8 +2,6 @@
 
 An interactive web-based drum synthesizer designed to teach audio synthesis concepts through hands-on sound design. Inspired by classic Roland drum machines (TR-808, TR-909).
 
-![DR-101 Screenshot](screenshot.png)
-
 ## Features
 
 ### Drum Sounds (All Synthesized)
@@ -89,7 +87,7 @@ dr-101/
 ├── index.html              # Main HTML entry
 ├── vite.config.js          # Vite configuration
 ├── public/
-│   ├── manifest.json       # PWA manifest
+│   ├── site.webmanifest    # PWA manifest
 │   ├── sw.js               # Service worker
 │   └── icons/              # App icons
 └── src/
@@ -118,24 +116,27 @@ dr-101/
 This project teaches fundamental audio synthesis concepts:
 
 ### 1. Oscillators & Waveforms
-- Sine, triangle, square, sawtooth waves
+- Sine, triangle, square, and sawtooth waves
 - How waveform shape affects timbre
 
 ### 2. Amplitude Envelopes
-- Attack, Decay, Sustain, Release (ADSR)
-- Why drums use fast attack and variable decay
+- Attack and decay
+- How envelopes shape the volume of a drum over time
+- Why drums typically use fast attacks and short-to-variable decay
 
 ### 3. Pitch Envelopes
-- Frequency modulation over time
-- Creating the "thump" in kicks and toms
+- How frequency and pitch change over time
+- Start frequency, end frequency, and pitch decay
+- Using a pitch sweep to create the "thump" of kicks and toms
 
 ### 4. Filters
-- Low-pass, high-pass, band-pass filters
-- Cutoff frequency and resonance (Q)
+- Low-pass, high-pass, and band-pass filters
+- Cutoff frequency and resonance
+- How filters shape the frequency content and character of a sound
 
 ### 5. Noise
-- White noise generation
-- Shaping noise into hi-hats and snares
+- White noise as an unpitched sound source
+- Using filters and other controls to shape noise into hi-hats and snare textures
 
 ## Keyboard Shortcuts
 
@@ -159,13 +160,3 @@ This project teaches fundamental audio synthesis concepts:
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
-
-## Acknowledgments
-
-- Inspired by Roland TR-808 and TR-909 drum machines
-- Web Audio API documentation and community
-- Classic drum machine synthesizer designs
-
----
-
-Made with oscillators, filters, and envelopes.
