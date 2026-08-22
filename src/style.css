@@ -360,7 +360,7 @@ body {
   z-index: 1;
 }
 
-.knob-info:hover {
+.knob-info:hover, .knob-info.active {
   background: var(--accent-dim);
   border-color: var(--accent);
   color: var(--text-primary);

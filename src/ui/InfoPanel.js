@@ -11,10 +11,10 @@ export class InfoPanel {
     this.title = document.getElementById('infoPanelTitle');
     this.content = document.getElementById('infoPanelContent');
     this.closeBtn = document.getElementById('infoPanelClose');
-    this.globalToggle = document.getElementById('globalInfo');
+    //this.globalToggle = document.getElementById('globalInfo');
 
     this.isOpen = false;
-    this.learningModeEnabled = false;
+    //this.learningModeEnabled = false;
 
     this.bindEvents();
   }
@@ -24,7 +24,10 @@ export class InfoPanel {
    */
   bindEvents() {
     // Close button
-    this.closeBtn?.addEventListener('click', () => this.toggle());
+    this.closeBtn?.addEventListener('click', () => {
+      this.close();
+      document.querySelector('.knob-info.active').classList.remove('active');
+    });
 
     // Click outside to close
     /*this.panel?.addEventListener('click', (e) => {
@@ -34,16 +37,16 @@ export class InfoPanel {
     });*/
 
     // Escape key to close
-    document.addEventListener('keydown', (e) => {
+    /*document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && this.isOpen) {
         this.toggleLearningMode();
       }
-    });
+    });*/
 
     // Global info toggle
-    this.globalToggle?.addEventListener('click', () => {
+    /*this.globalToggle?.addEventListener('click', () => {
       this.toggleLearningMode();
-    });
+    });*/
 
     // Listen for info button clicks (delegated)
     document.addEventListener('click', (e) => {
@@ -62,14 +65,15 @@ export class InfoPanel {
     const entry = getGlossaryEntry(key);
     this.title.textContent = entry.title;
     this.content.innerHTML = entry.content;
-    this.open();
+    this.open(key);
   }
 
   /**
    * Open the panel
    */
-  open() {
+  open(key) {
     this.isOpen = true;
+    document.querySelector(`[data-info="${key}"]`).classList.add('active');
     this.panel?.classList.add('open');
   }
 
@@ -78,6 +82,7 @@ export class InfoPanel {
    */
   close() {
     this.isOpen = false;
+    this.closeBtn?.classList.remove('active');
     this.panel?.classList.remove('open');
   }
 
@@ -87,8 +92,10 @@ export class InfoPanel {
   toggle() {
     if (this.isOpen) {
       this.close();
+      this.closeBtn?.classList.remove('active');
     } else {
       this.open();
+      this.closeBtn?.classList.add('active');
     }
   }
 }
