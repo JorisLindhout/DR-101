@@ -127,6 +127,10 @@ body {
   text-transform: uppercase;
 }
 
+.logo-image {
+  color: var(--accent);
+}
+
 .info-toggle {
   display: flex;
   align-items: center;

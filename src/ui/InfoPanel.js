@@ -24,7 +24,7 @@ export class InfoPanel {
    */
   bindEvents() {
     // Close button
-    this.closeBtn?.addEventListener('click', () => this.toggleLearningMode());
+    this.closeBtn?.addEventListener('click', () => this.toggle());
 
     // Click outside to close
     /*this.panel?.addEventListener('click', (e) => {
@@ -53,41 +53,6 @@ export class InfoPanel {
         this.showEntry(key);
       }
     });
-  }
-
-  /**
-   * Toggle learning mode (highlights all info buttons)
-   */
-  toggleLearningMode() {
-    this.learningModeEnabled = !this.learningModeEnabled;
-    document.body.classList.toggle('learning-mode', this.learningModeEnabled);
-    this.globalToggle?.classList.toggle('active', this.learningModeEnabled);
-
-    if (this.learningModeEnabled) {
-      this.showWelcome();
-    } else {
-      this.close();
-    }
-  }
-
-  /**
-   * Show welcome message
-   */
-  showWelcome() {
-    this.title.textContent = 'Learning Mode';
-    this.content.innerHTML = `
-      <p>Welcome to <strong>Learning Mode</strong>!</p>
-      <p>Click on any <span class="info-icon-inline">?</span> icon next to a parameter to learn about audio synthesis concepts.</p>
-      <p>Each drum sound uses different techniques:</p>
-      <ul style="margin: 12px 0; padding-left: 20px; color: var(--text-secondary); line-height: 1.8;">
-        <li><strong>Kick</strong> — Oscillator + pitch envelope</li>
-        <li><strong>Snare</strong> — Noise + tone + bandpass filter</li>
-        <li><strong>Hi-Hat</strong> — Noise + high-pass filter</li>
-        <li><strong>Tom</strong> — Oscillator + pitch envelope + body</li>
-      </ul>
-      <p>Experiment with the parameters and hear how each one affects the sound!</p>
-    `;
-    this.open();
   }
 
   /**

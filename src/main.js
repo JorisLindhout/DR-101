@@ -253,6 +253,7 @@ class DR101App {
           },
           onInfoClick: (key) => {
             this.infoPanel?.showEntry(key);
+            //console.log('Info clicked:', key);
           }
         });
 
